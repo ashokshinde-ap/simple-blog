@@ -41,6 +41,7 @@ export class RegisterComponent implements OnInit {
     this.blogRegisterData.email = this.registerForm.get('email').value;
     this.blogRegisterData.password = this.registerForm.get('password').value;
     // console.log(this.registerForm.value);
+    this.registerForm.reset();
     this.registerUser(this.blogRegisterData);
   }
 

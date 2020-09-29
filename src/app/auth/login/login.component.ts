@@ -30,16 +30,29 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get(controlName).value;
   }
 
+  loginUser(loginData: ILogin) {
+    this.authService.login(loginData).subscribe(
+      (data) => {
+        if (data) {
+          sessionStorage.setItem('userId', data.userId);
+          sessionStorage.setItem('token', data.token);
+          console.log(data);
+          this.authService.getAll().subscribe((data) => {
+            console.log(data);
+          });
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
   onSubmit() {
     this.login.email = this.getValue('email');
     this.login.password = this.getValue('password');
     this.login.remember = this.getValue('remember');
-    console.log(this.login);
-    this.authService.login(this.login);
-    if (localStorage.getItem('token') != null) {
-      console.log('token generate success');
-    } else {
-      this.route.navigateByUrl('/login');
-    }
+    // console.log(this.login);
+    this.loginUser(this.login);
   }
 }
