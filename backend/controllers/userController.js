@@ -1,80 +1,78 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const login = (req, res, next) => {
-  User.findOne({ email: req.body.email })
-    .then((response) => {
-      // console.log(req.body.password);
-      try {
-        if (response) {
-          let userValid = bcrypt.compareSync(
-            req.body.password,
-            response.password
-          );
-          // console.log(userValid);
-          if (userValid) {
-            res.status(200).json({
-              message: "success",
-            });
-          } else {
-            res.status(401).json({
-              message: "Invalid Creditial",
-            });
-          }
-        } else {
-          throw new Error("User Not Found");
+const demoTest = (req, res) => {
+  console.log("Hello");
+  res.status(200).json({
+    message: "success",
+  });
+};
+const login = (req, res) => {
+  username = req.body.email;
+  password = req.body.password;
+
+  User.findOne({ email: username }).then((user) => {
+    if (user) {
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (err) {
+          res.status(500).json({
+            error: err,
+          });
         }
-      } catch (error) {
-        res.status(404).json({
-          message: error.message,
-        });
-      }
-    })
-    .catch((error) => {
-      res.json({
-        message: "User not Found!",
+        if (result) {
+          let token = jwt.sign({ email: user.email }, "UsedToDecodeKey", {
+            expiresIn: "1h",
+          });
+          res.status(200).json({
+            message: "Login Successfully.",
+            userId: user._id,
+            token,
+          });
+        } else {
+          res.status(401).json({
+            message: "Invalid Password.”.",
+          });
+        }
       });
-    });
+    } else {
+      res.status(404).json({
+        message: "No User Found.",
+      });
+    }
+    // console.log("hello");
+  });
 };
 
-const create = (req, res, next) => {
-  // user.findOne({ email: req.body.email });
+const create = (req, res) => {
+  console.log(req.body.email);
   User.findOne({ email: req.body.email })
     .then((response) => {
-      try {
-        if (!response) {
-          let user = new User({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            password: bcrypt.hashSync(req.body.password, 8),
+      console.log(response);
+      let user = new User({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 8),
+      });
+      user
+        .save()
+        .then(() => {
+          res.status(200).json({
+            message: "Successfully registered.",
           });
-          user
-            .save()
-            .then(() => {
-              res.json({
-                message: "user register successfully",
-              });
-            })
-            .catch((error) => {
-              res.status(500).json({
-                error: error,
-                message: "An error occured",
-              });
-            });
-        } else {
-          throw new Error("User Already Exit");
-        }
-      } catch (error) {
-        res.status(409).json({
-          message: error.message,
+        })
+        .catch((error) => {
+          res.status(409).json({
+            error: error,
+            message: "User Already Exists.",
+          });
         });
-      }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+      // console.log(error);
       res.status(500).json({
-        message: "Something went wrong",
+        message: "An Error Occured.",
       });
     });
 };
@@ -82,4 +80,5 @@ const create = (req, res, next) => {
 module.exports = {
   login,
   create,
+  demoTest,
 };

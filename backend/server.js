@@ -2,9 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+var cors = require("cors");
 
 const UserRoute = require("./routes/user");
 mongoose.connect("mongodb://localhost:27017/simple_blog", {
+  useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -18,6 +20,7 @@ db.once("open", () => {
 });
 
 const app = express();
+app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

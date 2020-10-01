@@ -1,3 +1,5 @@
+import { ToastrService } from 'ngx-toastr';
+import { error } from '@angular/compiler/src/util';
 import { Router } from '@angular/router';
 import { IRegister } from '../IRegister';
 import { AuthService } from './../auth.service';
@@ -15,7 +17,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private route: Router
+    private route: Router,
+    private toastr: ToastrService
   ) {
     this.registerForm = this.fb.group({
       firstName: [''],
@@ -36,23 +39,21 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.blogRegisterData);
     this.blogRegisterData.firstName = this.registerForm.get('firstName').value;
     this.blogRegisterData.lastName = this.registerForm.get('lastName').value;
     this.blogRegisterData.email = this.registerForm.get('email').value;
     this.blogRegisterData.password = this.registerForm.get('password').value;
     // console.log(this.registerForm.value);
-    this.registerForm.reset();
+    // this.registerForm.reset();
     this.registerUser(this.blogRegisterData);
   }
 
   registerUser(registerData: IRegister) {
-    this.authService.register(this.blogRegisterData).subscribe(
-      (data) => {
-        console.log(data);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    this.authService.register(this.blogRegisterData).subscribe((data) => {
+      // console.log(data.message);
+      this.toastr.success(data.message);
+      this.route.navigateByUrl('/register-success');
+    });
   }
 }

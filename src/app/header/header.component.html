@@ -1,11 +1,31 @@
 <nav class="navbar navbar-light bg-primary justify-content-between">
   <a href="" class="navbar-brand">Blog</a>
-  <form class="form-inline">
-    <a routerLink="/login" class="btn btn-primary my-2 my-md-0" type="submit"
-      >Login</a
+  <div *ngIf="!authService.getToken()">
+    <button
+      routerLink="/login"
+      class="btn btn-primary my-2 my-md-0"
+      type="button"
     >
-    <a routerLink="/register" class="btn btn-primary my-2 my-md-0" type="submit"
+      Login
+    </button>
+    <button
+      routerLink="/register"
+      class="btn btn-primary my-2 my-md-0"
+      type="button"
+    >
+      Register
+    </button>
+  </div>
+  <div *ngIf="authService.getToken()">
+    <button
+      (click)="logout()"
+      class="btn btn-primary my-2 my-md-0"
+      type="button"
+    >
+      logout
+    </button>
+    <!-- <a routerLink="/register" class="btn btn-primary my-2 my-md-0" type="submit"
       >Register</a
-    >
-  </form>
+    > -->
+  </div>
 </nav>

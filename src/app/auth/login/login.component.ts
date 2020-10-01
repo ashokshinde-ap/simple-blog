@@ -1,8 +1,10 @@
+import { error } from '@angular/compiler/src/util';
 import { Router } from '@angular/router';
 import { AuthService } from './../auth.service';
 import { ILogin } from './../ILogin';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'login',
@@ -11,8 +13,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  login: ILogin;
-  constructor(private authService: AuthService, private route: Router) {
+  loginUserData: ILogin;
+  constructor(
+    private authService: AuthService,
+    private route: Router,
+    private toastr: ToastrService
+  ) {
     this.loginForm = new FormGroup({
       email: new FormControl(),
       password: new FormControl(),
@@ -20,7 +26,7 @@ export class LoginComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    this.login = {
+    this.loginUserData = {
       email: '',
       password: '',
       remember: false,
@@ -30,29 +36,20 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get(controlName).value;
   }
 
-  loginUser(loginData: ILogin) {
-    this.authService.login(loginData).subscribe(
-      (data) => {
-        if (data) {
-          sessionStorage.setItem('userId', data.userId);
-          sessionStorage.setItem('token', data.token);
-          console.log(data);
-          this.authService.getAll().subscribe((data) => {
-            console.log(data);
-          });
-        }
-      },
-      (error) => {
-        console.log(error);
+  loginUser(loginUserData: ILogin) {
+    this.authService.login(loginUserData).subscribe((data) => {
+      // console.log(data);
+      if (data) {
+        this.toastr.success('Login Successfully.');
+        this.route.navigateByUrl('/home');
       }
-    );
+    });
   }
-
   onSubmit() {
-    this.login.email = this.getValue('email');
-    this.login.password = this.getValue('password');
-    this.login.remember = this.getValue('remember');
+    this.loginUserData.email = this.getValue('email');
+    this.loginUserData.password = this.getValue('password');
+    this.loginUserData.remember = this.getValue('remember');
     // console.log(this.login);
-    this.loginUser(this.login);
+    this.loginUser(this.loginUserData);
   }
 }

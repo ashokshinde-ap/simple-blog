@@ -1,7 +1,10 @@
-import { RouterModule, Routes } from '@angular/router';
+import { HttpErrorInterceptor } from './interceptor/httperrorinterceptor.service';
+import { HttpinterceptorService } from './interceptor/httpinterceptor.service';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, Component } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,11 +13,14 @@ import { RegisterComponent } from './auth/register/register.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterSuccessComponent } from './auth/register-success/register-success.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-const route: Routes = [
-  { path: 'register', component: RegisterComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register-success', component: RegisterSuccessComponent },
-];
+import { HomeComponent } from './blog/home/home.component';
+
+// const route: Routes = [
+//   { path: 'register', component: RegisterComponent },
+//   { path: 'login', component: LoginComponent },
+//   { path: 'register-success', component: RegisterSuccessComponent },
+//   { path: 'home', component: HomeComponent },
+// ];
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,6 +28,7 @@ const route: Routes = [
     RegisterComponent,
     LoginComponent,
     RegisterSuccessComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,9 +36,21 @@ const route: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(route),
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpinterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
