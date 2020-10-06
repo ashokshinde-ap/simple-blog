@@ -9,11 +9,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 const route: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
-  {
-    path: 'register',
-    canActivate: [LoginguardGuard],
-    component: RegisterComponent,
-  },
   { path: 'login', canActivate: [LoginguardGuard], component: LoginComponent },
   {
     path: 'register-success',

@@ -1,13 +1,10 @@
 <div class="container">
   <div class="row centered-form">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title registerName">Register Here</h3>
-        </div>
         <div class="panel-body">
           <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <div class="row mt-3">
+            <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
                   <input
@@ -17,6 +14,9 @@
                     class="form-control input-sm"
                     placeholder="First Name"
                   />
+                  <div class="text-danger" *ngIf="hasRequierError('firstName')">
+                    <b>&nbsp;*required</b>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
@@ -28,6 +28,9 @@
                     class="form-control input-sm"
                     placeholder="Last Name"
                   />
+                  <div class="text-danger" *ngIf="hasRequierError('lastName')">
+                    <b>&nbsp;*required</b>
+                  </div>
                 </div>
               </div>
             </div>
@@ -40,6 +43,22 @@
                 class="form-control input-sm"
                 placeholder="Email Address"
               />
+              <div class="text-danger" *ngIf="hasRequierError('email')">
+                <b>&nbsp;*required</b>
+              </div>
+              <div class="text-danger" *ngIf="hasPattern('email')">
+                <b>&nbsp;*invalid</b>
+              </div>
+              <div
+                class="text-success"
+                *ngIf="
+                  registerForm.get('email').dirty &&
+                  !hasPattern('email') &&
+                  !hasRequierError('email')
+                "
+              >
+                <b>&nbsp;Valid</b>
+              </div>
             </div>
 
             <div class="row">
@@ -52,6 +71,17 @@
                     class="form-control input-sm"
                     placeholder="Password"
                   />
+                  <div class="text-danger" *ngIf="hasRequierError('password')">
+                    <b>&nbsp;*required</b>
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="hasStrongPassword('password')"
+                  >
+                    Password must be at least eight characters long and include
+                    at least one letter and one number. Password can also
+                    include special characters.
+                  </div>
                 </div>
               </div>
               <div class="col-md-12">
@@ -63,15 +93,36 @@
                     class="form-control input-sm"
                     placeholder="Confirm Password"
                   />
+                  <div
+                    class="text-danger"
+                    *ngIf="hasRequierError('confirmPassword')"
+                  >
+                    <b>&nbsp;*required</b>
+                  </div>
+
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      !hasRequierError('confirmPassword') &&
+                      hasPasswordMismatchError()
+                    "
+                  >
+                    *Password Must Match
+                  </div>
                 </div>
               </div>
             </div>
-            <input
-              type="submit"
-              value="Register"
-              keyup.enter
-              class="btn btn-primary btn-block"
-            />
+            <div class="modal-footer">
+              <button
+                (click)="resetForm()"
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
           </form>
         </div>
       </div>

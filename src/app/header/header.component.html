@@ -1,20 +1,17 @@
 <nav class="navbar navbar-light bg-primary justify-content-between">
   <a href="" class="navbar-brand">Blog</a>
   <div *ngIf="!authService.getToken()">
-    <button
-      routerLink="/login"
-      class="btn btn-primary my-2 my-md-0"
-      type="button"
-    >
-      Login
+    <button routerLink="/login" class="btn btn-primary my-2" type="button">
+      <i class="fa fa-sign-in" aria-hidden="true"></i>
+      SignIn/SignUp
     </button>
-    <button
+    <!-- <button
       routerLink="/register"
       class="btn btn-primary my-2 my-md-0"
       type="button"
     >
       Register
-    </button>
+    </button> -->
   </div>
   <div *ngIf="authService.getToken()">
     <button
@@ -22,6 +19,7 @@
       class="btn btn-primary my-2 my-md-0"
       type="button"
     >
+      <i class="fa fa-sign-out" aria-hidden="true"></i>
       logout
     </button>
     <!-- <a routerLink="/register" class="btn btn-primary my-2 my-md-0" type="submit"

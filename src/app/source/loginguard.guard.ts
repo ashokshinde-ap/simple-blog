@@ -9,12 +9,12 @@ import { Observable, of } from 'rxjs';
 export class LoginguardGuard implements CanActivate {
   constructor(private authService: AuthService, private route: Router) {}
   canActivate(): Observable<boolean> {
-    if (this.authService.getToken()) {
+    if (!this.authService.getToken()) {
+      // this.route.navigateByUrl('/home');
+      return of(true);
+    } else {
       this.route.navigateByUrl('/home');
       return of(false);
-    } else {
-      // this.route.navigateByUrl('/login');
-      return of(true);
     }
   }
 }

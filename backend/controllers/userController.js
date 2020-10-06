@@ -16,28 +16,28 @@ const login = (req, res) => {
     if (user) {
       bcrypt.compare(password, user.password, function (err, result) {
         if (err) {
-          res.status(500).json({
-            error: err,
+          return res.status(500).json({
+            message: "Illegal arguments:",
           });
         }
         if (result) {
           let token = jwt.sign({ email: user.email }, "UsedToDecodeKey", {
             expiresIn: "1h",
           });
-          res.status(200).json({
+          return res.status(200).json({
             message: "Login Successfully.",
             userId: user._id,
             token,
           });
         } else {
-          res.status(401).json({
-            message: "Invalid Password.”.",
+          return res.status(401).json({
+            message: "Invalid Password.",
           });
         }
       });
     } else {
-      res.status(404).json({
-        message: "No User Found.",
+      return res.status(404).json({
+        message: "Invalid Username.",
       });
     }
     // console.log("hello");
@@ -48,7 +48,6 @@ const create = (req, res) => {
   console.log(req.body.email);
   User.findOne({ email: req.body.email })
     .then((response) => {
-      console.log(response);
       let user = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -58,12 +57,12 @@ const create = (req, res) => {
       user
         .save()
         .then(() => {
-          res.status(200).json({
+          return res.status(200).json({
             message: "Successfully registered.",
           });
         })
         .catch((error) => {
-          res.status(409).json({
+          return res.status(409).json({
             error: error,
             message: "User Already Exists.",
           });
@@ -71,7 +70,7 @@ const create = (req, res) => {
     })
     .catch(() => {
       // console.log(error);
-      res.status(500).json({
+      return res.status(500).json({
         message: "An Error Occured.",
       });
     });

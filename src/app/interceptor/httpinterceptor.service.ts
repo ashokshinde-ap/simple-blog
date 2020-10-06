@@ -18,11 +18,13 @@ export class HttpinterceptorService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     let authService = this.injector.get(AuthService);
-    let tokenedreq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${authService.getToken()}`,
-      },
-    });
+    let tokenedreq = authService.getToken()
+      ? req.clone({
+          setHeaders: {
+            Authorization: `Bearer ${authService.getToken()}`,
+          },
+        })
+      : req;
     return next.handle(tokenedreq);
   }
 }

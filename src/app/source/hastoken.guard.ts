@@ -9,9 +9,11 @@ import { Observable, of } from 'rxjs';
 export class HastokenGuard implements CanActivate {
   constructor(private authService: AuthService, private route: Router) {}
   canActivate(): Observable<boolean> {
-    if (this.authService.getToken()) return of(true);
-    else {
+    if (this.authService.getToken()) {
+      return of(true);
+    } else {
       this.route.navigateByUrl('/login');
+      return of(false);
     }
   }
 }
